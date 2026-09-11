@@ -1,0 +1,12 @@
+.dart_tool/
+.packages
+build/
+.idea/
+*.iml
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+ios/Pods/
+ios/Flutter/Flutter.framework
+android/.gradle/
+android/local.properties

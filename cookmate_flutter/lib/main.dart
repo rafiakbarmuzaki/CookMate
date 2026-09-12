@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'models/user_profile.dart';
+import 'services/auth_service.dart';
 import 'theme/app_theme.dart';
 import 'views/auth_page.dart';
 import 'views/health_profile.dart';
@@ -51,10 +52,16 @@ class AppRoot extends StatefulWidget {
 /// seperti ProfilePage.
 class _AppRootState extends State<AppRoot> {
   UserProfile profile = UserProfile.empty();
+  String _token = '';
   _Stage stage = _Stage.auth;
 
-  void _goToHealthProfile() {
-    setState(() => stage = _Stage.health);
+  /// Dipanggil setelah login/register sukses di AuthPage.
+  void _onLogin(String token, UserProfile user) {
+    setState(() {
+      _token = token;
+      profile = user;
+      stage = _Stage.health;
+    });
   }
 
   void _goToHome() {
@@ -62,15 +69,18 @@ class _AppRootState extends State<AppRoot> {
   }
 
   void _goToAuth() {
+    AuthService.instance.logout();
     setState(() {
       stage = _Stage.auth;
       profile = UserProfile.empty();
+      _token = '';
     });
   }
 
   Widget _buildHome() {
     return HomePage(
       profile: profile,
+      userToken: _token,
       onProfileChanged: (p) => setState(() => profile = p),
       onOpenProfilePage: () {
         Navigator.of(context).push(
@@ -89,11 +99,15 @@ class _AppRootState extends State<AppRoot> {
   Widget build(BuildContext context) {
     switch (stage) {
       case _Stage.auth:
-        return AuthPage(onLogin: _goToHealthProfile);
+        return AuthPage(onLogin: _onLogin);
       case _Stage.health:
         return HealthProfile(
           onComplete: (p) {
             setState(() => profile = p);
+            // Sinkronkan profil kesehatan ke backend (PUT /api/auth/me).
+            if (_token.isNotEmpty) {
+              AuthService.instance.updateProfile(p).catchError((_) => p);
+            }
             _goToHome();
           },
         );

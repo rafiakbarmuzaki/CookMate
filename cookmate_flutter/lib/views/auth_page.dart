@@ -1,10 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../models/user_profile.dart';
+import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 
 /// Halaman Login/Daftar — menggantikan AuthPage.tsx.
+/// Terhubung ke CookMate Backend (POST /api/auth/register & /api/auth/login).
 class AuthPage extends StatefulWidget {
-  final VoidCallback onLogin;
+  final void Function(String token, UserProfile user) onLogin;
   const AuthPage({super.key, required this.onLogin});
 
   @override
@@ -41,7 +44,7 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     final email = emailCtrl.text.trim();
     final password = passwordCtrl.text.trim();
     final name = nameCtrl.text.trim();
@@ -67,13 +70,30 @@ class _AuthPageState extends State<AuthPage> {
       }
     }
 
-    // 3. Proses jika validasi berhasil
+    // 3. Panggil backend (register/login) — menggantikan login palsu.
     setState(() => submitting = true);
-    Future.delayed(const Duration(milliseconds: 700), () {
+    try {
+      final AuthResult result;
+      if (isLogin) {
+        result = await AuthService.instance.login(email: email, password: password);
+      } else {
+        result = await AuthService.instance.register(
+          name: name,
+          email: email,
+          password: password,
+        );
+      }
+      if (!mounted) return;
+      widget.onLogin(result.token, result.user);
+    } on AuthException catch (e) {
       if (!mounted) return;
       setState(() => submitting = false);
-      widget.onLogin();
-    });
+      _showSnackBar(e.message);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => submitting = false);
+      _showSnackBar('Terjadi kesalahan: $e');
+    }
   }
 
   InputDecoration _decoration({required String hint, required IconData icon, Widget? suffix}) {

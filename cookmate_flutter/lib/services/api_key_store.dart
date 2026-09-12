@@ -12,7 +12,7 @@ class ApiKeyStore {
   static const _prefKey = 'gemini_api_key';
 
   // Seluruh key diatur dari kode, bukan dari input user agar hanya developer yang bisa mengganti.
-  static const String _defaultKey = 'AQ.Ab8RN6L692hx3-0SlT-3lKwPj7zTpt2Llg6YT9ouIspqTU2zfw';
+  static const String _defaultKey = '';
 
   static Future<String> getKey() async {
     // Prioritaskan key statis dari kode agar tidak tertimpa data lama di SharedPreferences.

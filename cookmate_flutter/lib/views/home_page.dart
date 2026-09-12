@@ -25,12 +25,14 @@ class HomePage extends StatefulWidget {
   final UserProfile profile;
   final ValueChanged<UserProfile> onProfileChanged;
   final VoidCallback onOpenProfilePage;
+  final String? userToken;
 
   const HomePage({
     super.key,
     required this.profile,
     required this.onProfileChanged,
     required this.onOpenProfilePage,
+    this.userToken,
   });
 
   @override
@@ -136,6 +138,7 @@ class _HomePageState extends State<HomePage> {
         cookTime: cookTime,
         profile: widget.profile,
         followHealthProfile: followHealth,
+        userToken: widget.userToken,
       );
       if (!mounted) return;
       setState(() {
@@ -257,6 +260,7 @@ class _HomePageState extends State<HomePage> {
       builder: (_) => _ChatSheet(
         gemini: _gemini,
         contextIngredients: selectedIngredients,
+        userToken: widget.userToken,
       ),
     );
   }
@@ -892,8 +896,13 @@ class _HomePageState extends State<HomePage> {
 class _ChatSheet extends StatefulWidget {
   final GeminiService gemini;
   final List<String> contextIngredients;
+  final String? userToken;
 
-  const _ChatSheet({required this.gemini, required this.contextIngredients});
+  const _ChatSheet({
+    required this.gemini,
+    required this.contextIngredients,
+    this.userToken,
+  });
 
   @override
   State<_ChatSheet> createState() => _ChatSheetState();
@@ -945,6 +954,7 @@ class _ChatSheetState extends State<_ChatSheet> {
         message: text,
         history: messages,
         contextIngredients: widget.contextIngredients,
+        userToken: widget.userToken,
       );
       if (!mounted) return;
       setState(() {

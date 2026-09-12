@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/recipe.dart';
 import '../models/user_profile.dart';
 import 'api_key_store.dart';
+import 'auth_service.dart';
 
 /// Exception khusus untuk error yang berasal dari Gemini API / Backend.
 class GeminiException implements Exception {
@@ -24,8 +25,8 @@ class GeminiService {
   final String backendUrl;
 
   GeminiService({
-    this.model = 'gemini-1.5-flash',
-    this.backendUrl = 'http://localhost:5000/api', // Ubah ke URL Render jika sudah deploy
+    this.model = 'gemini-3.6-flash',
+    this.backendUrl = kBackendBaseUrl,
   });
 
   Uri _endpoint(String apiKey) => Uri.parse(

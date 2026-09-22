@@ -1,0 +1,45 @@
+name: cookmate_ai
+description: "CookMate AI - Asisten dapur cerdas berbasis Flutter + Gemini API"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # UI
+  google_fonts: ^6.2.1
+
+  # Networking (Gemini API)
+  http: ^1.2.2
+
+  # Capture bahan dari kamera
+  image_picker: ^1.1.2
+
+  # Simpan API key & preferensi ringan secara lokal
+  shared_preferences: ^2.2.3
+
+  # Ekspor resep sebagai PDF dan bagikan/download dari perangkat.
+  pdf: ^3.11.1
+  printing: ^5.13.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo.jpeg
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.jpeg"
+  min_sdk_android: 21 
